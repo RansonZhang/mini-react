@@ -2,7 +2,7 @@
  * 返回最小堆堆顶元素
  * @param heap
  */
-function peek(heap) {
+export function peek(heap) {
   return heap.length === 0 ? null : heap[0];
 }
 
@@ -10,7 +10,7 @@ function peek(heap) {
  * 向最小堆插入元素
  * @param heap
  */
-function push(heap, node) {
+export function push(heap, node) {
   let index = heap.length;
   heap.push(node);
   // 向上调整，令其符合最小堆定义
@@ -48,7 +48,7 @@ function compare(a, b) {
 /**
  * 删除堆顶元素
  */
-function pop(heap) {
+export function pop(heap) {
   if (heap.length === 0) {
     return null;
   }
@@ -73,8 +73,8 @@ function pop(heap) {
 function siftDown(heap, node, i) {
   let index = i;
   const length = heap.length;
-  const halfLnegth = length >> 1;
-  while (index < halfLnegth) {
+  const halfLength = length >> 1;
+  while (index < halfLength) {
     const leftIndex = (index + 1) * 2 - 1;
     const rightIndex = leftIndex + 1;
     const left = heap[leftIndex];
@@ -102,14 +102,14 @@ function siftDown(heap, node, i) {
   }
 }
 
-const a = [3, 7, 4, 10, 12, 9, 6, 15, 14];
+// const a = [3, 7, 4, 10, 12, 9, 6, 15, 14];
 
-push(a, 8);
+// push(a, 8);
 
-while (1) {
-  if (a.length === 0) {
-    break;
-  }
-  console.log('a', peek(a)); //sy-log
-  pop(a);
-}
+// while (1) {
+//   if (a.length === 0) {
+//     break;
+//   }
+//   console.log('a', peek(a)); //sy-log
+//   pop(a);
+// }

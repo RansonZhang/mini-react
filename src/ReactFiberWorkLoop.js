@@ -13,6 +13,7 @@ import {
   updateHostTextComponent,
 } from './ReactFiberReconciler';
 import { Placement } from './utils';
+import { scheduleCallback } from './scheduler';
 
 // work in progress 当前正在工作中的
 let wip = null;
@@ -22,6 +23,7 @@ let wipRoot = null;
 export function scheduleUpdateOnFiber(fiber) {
   wip = fiber;
   wipRoot = fiber;
+  scheduleCallback(workLoop);
 }
 
 function performUnitOfWork() {
@@ -66,8 +68,8 @@ function performUnitOfWork() {
   wip = null;
 }
 
-function workLoop(IdleDeadline) {
-  while (wip && IdleDeadline.timeRemaining() > 0) {
+function workLoop(IdleDedline) {
+  while (wip) {
     performUnitOfWork();
   }
 
@@ -75,8 +77,6 @@ function workLoop(IdleDeadline) {
     commitRoot();
   }
 }
-
-// requestIdleCallback(workLoop);
 
 function commitRoot() {
   commitWorker(wipRoot);
