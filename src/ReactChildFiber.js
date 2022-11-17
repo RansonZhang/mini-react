@@ -2,20 +2,21 @@ import { createFiber } from './reactFiber';
 import { isArray, isStringOrNumber, Update } from './utils';
 
 // 协调（diff）
-export function reconcileChildren(wip, children) {
+export function reconcileChildren(returnFiber, children) {
   if (isStringOrNumber(children)) return;
 
   const newChildren = isArray(children) ? children : [children];
   // oldFiber的头节点
-  let oldFiber = wip.alternate?.child;
+  let oldFiber = returnFiber.alternate?.child;
   let previousNewFiber = null;
-  for (let i = 0; i < newChildren.length; i++) {
-    const newChild = newChildren[i];
+  let newIndex = 0;
+  for (newIndex = 0; newIndex < newChildren.length; newIndex++) {
+    const newChild = newChildren[newIndex];
     if (newChild == null) {
       continue;
     }
 
-    const newFiber = createFiber(newChild, wip);
+    const newFiber = createFiber(newChild, returnFiber);
     const isSame = sameNode(newFiber, oldFiber);
     if (isSame) {
       Object.assign(newFiber, {
@@ -26,7 +27,7 @@ export function reconcileChildren(wip, children) {
     }
 
     if (!isSame && oldFiber) {
-      deleteChild(wip, oldFiber);
+      deleteChild(returnFiber, oldFiber);
     }
 
     if (oldFiber) {
@@ -35,12 +36,18 @@ export function reconcileChildren(wip, children) {
 
     if (previousNewFiber === null) {
       // head node
-      wip.child = newFiber;
+      returnFiber.child = newFiber;
     } else {
       previousNewFiber.sibling = newFiber;
     }
 
     previousNewFiber = newFiber;
+  }
+
+  // 老节点比新节点多，删除老节点
+  if (newIndex === newChildren.length) {
+    deleteRemainingChildren(returnFiber, oldFiber);
+    return;
   }
 }
 
@@ -60,5 +67,13 @@ function deleteChild(returnFiber, childToDelete) {
     returnFiber.deletions.push(childToDelete);
   } else {
     returnFiber.deletions = [childToDelete];
+  }
+}
+
+function deleteRemainingChildren(returnFiber, currentFirstChild) {
+  let childToDelete = currentFirstChild;
+  while (childToDelete) {
+    deleteChild(returnFiber, childToDelete);
+    childToDelete = childToDelete.sibling;
   }
 }
