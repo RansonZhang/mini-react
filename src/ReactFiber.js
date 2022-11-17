@@ -25,6 +25,10 @@ export function createFiber(vnode, returnFiber) {
     flags: Placement,
     // 记录节点在等当前层级下的位置
     index: null,
+    // old fiber
+    alternate: null,
+    // 函数组件的首个hook
+    memorizedState: null,
   };
 
   const { type } = vnode;

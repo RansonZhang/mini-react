@@ -12,7 +12,7 @@ import {
   updateFragmentComponent,
   updateHostTextComponent,
 } from './ReactFiberReconciler';
-import { Placement } from './utils';
+import { Placement, Update, updateNode } from './utils';
 import { scheduleCallback } from './scheduler';
 
 // work in progress 当前正在工作中的
@@ -90,6 +90,9 @@ function commitWorker(wip) {
   const { flags, stateNode } = wip;
   if (flags & Placement && stateNode) {
     parentNode.appendChild(stateNode);
+  }
+  if (flags & Update && stateNode) {
+    updateNode(stateNode, wip.alternate.props, wip.props);
   }
   // 2.提交子节点
   commitWorker(wip.child);

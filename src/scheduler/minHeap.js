@@ -49,9 +49,7 @@ function compare(a, b) {
  * 删除堆顶元素
  */
 export function pop(heap) {
-  if (heap.length === 0) {
-    return null;
-  }
+  if (heap.length === 0) return null;
 
   const first = heap[0];
   const last = heap.pop();
