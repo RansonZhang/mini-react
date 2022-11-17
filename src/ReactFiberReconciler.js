@@ -57,6 +57,11 @@ function reconcileChildren(wip, children) {
         flags: Update,
       });
     }
+
+    if (!isSame && oldFiber) {
+      deleteChild(wip, oldFiber);
+    }
+
     if (oldFiber) {
       oldFiber = oldFiber.sibling;
     }
@@ -80,4 +85,13 @@ function reconcileChildren(wip, children) {
  */
 function sameNode(a, b) {
   return a && b && a.type === b.type && a.key === b.key;
+}
+
+function deleteChild(returnFiber, childToDelete) {
+  const deletions = returnFiber.deletions;
+  if (deletions) {
+    returnFiber.deletions.push(childToDelete);
+  } else {
+    returnFiber.deletions = [childToDelete];
+  }
 }
