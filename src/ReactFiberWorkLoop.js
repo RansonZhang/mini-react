@@ -89,7 +89,8 @@ function commitWorker(wip) {
   const parentNode = getParentNode(wip.return);
   const { flags, stateNode } = wip;
   if (flags & Placement && stateNode) {
-    parentNode.appendChild(stateNode);
+    const before = getHostSibling(wip.sibling);
+    insertOrAppendPlacementNode(stateNode, before, parentNode);
   }
   if (flags & Update && stateNode) {
     updateNode(stateNode, wip.alternate.props, wip.props);
@@ -131,4 +132,20 @@ function getStateNode(fiber) {
     tem = tem.child;
   }
   return tem.stateNode;
+}
+
+function getHostSibling(sibling) {
+  while (sibling) {
+    if (sibling.stateNode && !(sibling.flags & Placement)) {
+      return sibling.stateNode;
+    }
+    sibling = sibling.sibling;
+  }
+  return null;
+}
+
+function insertOrAppendPlacementNode(stateNode, before, parentNode) {
+  before
+    ? parentNode.insertBefore(stateNode, before)
+    : parentNode.appendChild(stateNode);
 }

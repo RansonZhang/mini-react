@@ -12,24 +12,22 @@ import './index.css';
 
 function FunctionComponet(props) {
   const [count, setCount] = useReducer(x => x + 1, 0);
-  const [count2, setCount2] = useState(4);
+  const [count2, setCount2] = useState(0);
   return (
     <div className='fun'>
       <p>{props.name}</p>
       <button onClick={() => setCount()}>{count}</button>
-      <button
-        onClick={() => {
-          count2 === 0 ? setCount2(4) : setCount2(count2 - 2);
-        }}
-      >
-        {count2}
-      </button>
+      <button onClick={() => setCount2(count2 + 1)}>{count2}</button>
       {count % 2 ? <div>111</div> : <div>222</div>}
 
       <ul>
-        {[0, 1, 2, 3, 4].map(item => {
-          return count2 >= item ? <li key={item}>{item}</li> : null;
-        })}
+        {/* {count2 === 2
+          ? [0, 1, 3, 4].map(item => <li key={item}>{item}</li>)
+          : [0, 1, 2, 3, 4].map(item => <li key={item}>{item}</li>)} */}
+
+        {count2 === 2
+          ? [2, 1, 3, 4].map(item => <li key={item}>{item}</li>)
+          : [0, 1, 2, 3, 4].map(item => <li key={item}>{item}</li>)}
       </ul>
     </div>
   );
