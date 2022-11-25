@@ -1,7 +1,14 @@
 // import React from 'react'
 // import ReactDOM from 'react-dom/client'
 // import App from './App';
-import { ReactDOM, Component, useReducer, useState } from '../which-react';
+import {
+  ReactDOM,
+  Component,
+  useReducer,
+  useState,
+  useEffect,
+  useLayoutEffect,
+} from '../which-react';
 import './index.css';
 
 // ReactDOM.createRoot(document.getElementById('root')).render(
@@ -13,6 +20,15 @@ import './index.css';
 function FunctionComponet(props) {
   const [count, setCount] = useReducer(x => x + 1, 0);
   const [count2, setCount2] = useState(0);
+
+  useLayoutEffect(() => {
+    console.log('useLayoutEffect', count2);
+  }, [count2]);
+
+  useEffect(() => {
+    console.log('useEffect', count2);
+  }, [count2]);
+
   return (
     <div className='fun'>
       <p>{props.name}</p>

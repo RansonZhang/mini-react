@@ -6,6 +6,10 @@ export const Placement = /*                    */ 0b0000000000000000000010; // 2
 export const Update = /*                       */ 0b0000000000000000000100; // 4
 export const Deletion = /*                     */ 0b0000000000000000001000; // 8
 
+// ! HookFlags
+export const HookLayout = /*                   */ 0b010;
+export const HookPassive = /*                  */ 0b100;
+
 export function isStr(s) {
   return typeof s === 'string';
 }
@@ -27,8 +31,7 @@ export function isUndefined(s) {
 }
 
 export function updateNode(node, prevVal, nextVal) {
-  Object.keys(prevVal)
-  .forEach(k => {
+  Object.keys(prevVal).forEach(k => {
     if (k === 'children') {
       if (isStringOrNumber(prevVal[k])) {
         node.textContent = '';
@@ -43,8 +46,7 @@ export function updateNode(node, prevVal, nextVal) {
     }
   });
 
-  Object.keys(nextVal)
-  .forEach(k => {
+  Object.keys(nextVal).forEach(k => {
     if (k === 'children') {
       if (isStringOrNumber(nextVal[k])) {
         node.textContent = nextVal[k] + '';
@@ -56,4 +58,16 @@ export function updateNode(node, prevVal, nextVal) {
       node[k] = nextVal[k];
     }
   });
+}
+
+export function areHookInputsEqual(nextDeps, prevDeps) {
+  if (prevDeps === null) return false;
+
+  for (let i = 0; i < prevDeps.length && i < nextDeps.length; i++) {
+    if (Object.is(prevDeps[i], nextDeps[i])) {
+      continue;
+    }
+    return false;
+  }
+  return true;
 }

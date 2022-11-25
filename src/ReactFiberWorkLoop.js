@@ -87,7 +87,7 @@ function commitWorker(wip) {
   if (!wip) return;
   // 1.提交自己
   const parentNode = getParentNode(wip.return);
-  const { flags, stateNode } = wip;
+  const { flags, stateNode, tag } = wip;
   if (flags & Placement && stateNode) {
     const before = getHostSibling(wip.sibling);
     insertOrAppendPlacementNode(stateNode, before, parentNode);
@@ -99,6 +99,10 @@ function commitWorker(wip) {
   if (wip.deletions) {
     // 删除wip的子节点
     commitDeletions(wip.deletions, stateNode || parentNode);
+  }
+
+  if (tag === FunctionComponent) {
+    invokeHooks(wip);
   }
 
   // 2.提交子节点
@@ -148,4 +152,18 @@ function insertOrAppendPlacementNode(stateNode, before, parentNode) {
   before
     ? parentNode.insertBefore(stateNode, before)
     : parentNode.appendChild(stateNode);
+}
+
+function invokeHooks(wip) {
+  const { updateQueueOfLayout, updateQueueOfEffect } = wip;
+
+  for (let i = 0; i < updateQueueOfLayout.length; i++) {
+    const effect = updateQueueOfLayout[i];
+    effect.create();
+  }
+
+  for (let i = 0; i < updateQueueOfEffect.length; i++) {
+    const effect = updateQueueOfEffect[i];
+    scheduleCallback(() => effect.create());
+  }
 }
